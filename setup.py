@@ -11,7 +11,7 @@ include_dirs = torch.utils.cpp_extension.include_paths()
 
 setup(
     name="depth_render",
-    version="0.0.1",
+    version="0.0.2",
     description="rendering depth point cloud",
     # url="https://github.com/jbarker-nvidia/pytorch-correlation",
     author="Saurus",

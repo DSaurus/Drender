@@ -53,3 +53,22 @@ void depth_pcloud_render_idx_cuda(float* pcloud, int* zbuf, int* idbuf, int batc
         pcloud, zbuf, idbuf, batch_size, n, h, w
     );
 }
+
+
+__global__ void depth_pcloud_render_idx_backward_kernel(float* pcloud, int* idbuf, float* grad, float* grad_out, int batch_size, int n, int h, int w){
+    int bid = blockIdx.x;
+    int hid = blockIdx.y;
+    int wid = blockIdx.z;
+    int id_data = *(pcloud + (bid*h*w + hid*w + wid));
+    if(id_data >= 0){
+        atomicExch(grad_out + id_data, *(grad +  (bid*h*w + hid*w + wid)));
+    }
+}
+
+void depth_pcloud_render_idx_backward_cuda(float* pcloud, int* idbuf, float* grad, float* grad_out, int batch_size, int n, int h, int w){
+    dim3 blocks_dim(batch_size, h, w);
+
+    depth_pcloud_render_idx_backward_kernel<<<blocks_dim, 1>>>(
+        pcloud, idbuf, grad, grad_out, batch_size, n, h, w
+    );
+}

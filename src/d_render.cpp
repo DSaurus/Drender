@@ -26,7 +26,19 @@ int depth_pcloud_render_idx(torch::Tensor xyz_pcloud, torch::Tensor zbuf, torch:
     return 0;
 }
 
+
+int depth_pcloud_render_idx_backward(torch::Tensor xyz_pcloud, torch::Tensor idbuf, torch::Tensor grad, torch::Tensor grad_out){
+    // xyz_pcloud B N 3 zbuf B H W
+    int batch_size = xyz_pcloud.size(0);
+    int n = xyz_pcloud.size(1);
+    int h = idbuf.size(1);
+    int w = idbuf.size(2);
+    depth_pcloud_render_idx_backward_cuda(xyz_pcloud.data_ptr<float>(), idbuf.data_ptr<int>(), grad.data_ptr<float>(), grad_out.data_ptr<float>(), batch_size, n, h, w);
+    return 0;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("depth_pcloud_render", &depth_pcloud_render, "render");
   m.def("depth_pcloud_render_idx", &depth_pcloud_render_idx, "render");
+  m.def("depth_pcloud_render_idx_backward", &depth_pcloud_render_idx, "render");
 }

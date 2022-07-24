@@ -3,5 +3,6 @@
 
 void depth_pcloud_render_cuda(float* pcloud, int* zbuf, int batch_size, int n, int h, int w);
 void depth_pcloud_render_idx_cuda(float* pcloud, int* zbuf, int* idbuf, int batch_size, int n, int h, int w);
+void depth_pcloud_render_idx_backward_cuda(float* pcloud, int* idbuf, float* grad, float* grad_out, int batch_size, int n, int h, int w);
 
 #endif
